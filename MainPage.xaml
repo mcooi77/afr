@@ -1,0 +1,156 @@
+﻿<!-- Copyright (c) Microsoft. All rights reserved. -->
+
+<Page
+    x:Class="SerialSample.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SerialSample"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Width="798" Height="488.5">
+
+    <Page.Resources>
+        <CollectionViewSource x:Name="DeviceListSource"/>
+        <CollectionViewSource x:Name="MyDataPtsSource"/>
+    </Page.Resources>
+
+
+
+    <Grid Background="White" Width="800" Height="480">
+
+        <!--<TextBlock Text="Write Data:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,139,0,0"/>-->
+
+        <!--<Button x:Name="sendTextButton" Content="Write" Click="sendTextButton_Click" HorizontalAlignment="Left" Margin="315,160,0,0" VerticalAlignment="Top"/>-->
+
+        <Rectangle HorizontalAlignment="Center" Height="24" VerticalAlignment="Top" Width="800" Fill="#FFFFFDA2" Margin="0,236,0,0" StrokeThickness="2" Stroke="#FF827E00"/>
+
+        <!--<Button x:Name="sendTextButton" Content="Write" Click="sendTextButton_Click" HorizontalAlignment="Left" Margin="315,160,0,0" VerticalAlignment="Top"/>-->
+
+        <Rectangle HorizontalAlignment="Center" Height="32" Margin="0,1,0,0" VerticalAlignment="Top" Width="782" Fill="#FF36971E"/>
+
+
+        <!--<Button x:Name="sendTextButton" Content="Write" Click="sendTextButton_Click" HorizontalAlignment="Left" Margin="315,160,0,0" VerticalAlignment="Top"/>-->
+
+        <Grid HorizontalAlignment="Left" Height="171" VerticalAlignment="Top" Width="204" Margin="586,54,0,0" Background="#FFF1D3D3" BorderBrush="#FFBE0000" Padding="2,2,2,2">
+
+            <TextBlock Text="Select Device:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,23,0,0"/>
+
+            <Button x:Name="comPortInput" Content="Connect" Click="comPortInput_Click" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Height="19" Width="84" FontSize="10" Padding="0,0,0,0" Margin="0,89,0,0"/>
+            <Button x:Name="closeDevice" Margin="128,90,0,0" Content="Disconnect" Click="closeDevice_Click" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="10" Padding="0,0,0,0" Width="76"/>
+
+            <TextBlock Text="Read Data:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,109,0,0" FontFamily="Segoe UI"/>
+
+            <ListBox x:Name="ConnectDevices" ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.HorizontalScrollBarVisibility="Visible" ItemsSource="{Binding Source={StaticResource DeviceListSource}}" Background="#FFD2A09F" SelectionChanged="ConnectDevices_SelectionChanged" Margin="0,44,0,88" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Id}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBox x:Name="rcvdText" Width="182" HorizontalAlignment="Left" Margin="6,130,0,2" Background="#FFD2A09F" FontFamily="Segoe UI"/>
+            <TextBlock x:Name="textBlock9" HorizontalAlignment="Center" Text="Test-Bench Data" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Foreground="#FFCE0000"/>
+
+        </Grid>
+
+        <TextBox x:Name="status" TextWrapping="Wrap" IsReadOnly="True" Width="460" Height="75" HorizontalAlignment="Left" VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" BorderBrush="White" Margin="16,481,0,0"/>
+
+        <TextBlock x:Name="pageTitle" Text="Automated Fluid Resuscitation" Style="{StaticResource HeaderTextBlockStyle}" IsHitTestVisible="false" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="30,1,0,0" FontSize="20" FontWeight="Bold" Foreground="White"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="310,657,0,0" Text="TextBox" VerticalAlignment="Top"/>
+
+        <!--OUR CODE FOR LISTBOX START-->
+        <Grid Margin="0,0,0,10" HorizontalAlignment="Stretch" Height="210" Width="800" VerticalAlignment="Bottom">
+            <ListView Height="40" Margin="0,0,0,0" Background="#FFED7D31" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontWeight="Bold" Foreground="Black" SelectionChanged="ListView_SelectionChanged_1">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid Background="{ThemeResource SystemBaseLowColor}" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Width="800" Padding="0,12,-5,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Time" Style="{ThemeResource CaptionTextBlockStyle}" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="14"/>
+                            <TextBlock Grid.Column="1" Text="Total Volume (mL)" Style="{ThemeResource CaptionTextBlockStyle}" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="14"/>
+                            <TextBlock Grid.Column="2" Text="Urine Rate (mL/kg/h)" Style="{ThemeResource CaptionTextBlockStyle}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="14"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+            </ListView>
+
+            <ListView x:Name="DynamicListView" ItemsSource="{Binding Source={StaticResource MyDataPtsSource}}" Height="170"  Width="800" VerticalAlignment="Bottom" Background="#FFE7C27F" SelectionChanged="ListView_SelectionChanged" Margin="0,30,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:Name="TableDataTemplate" x:DataType="local:AFRDataPoint" ScrollViewer.IsVerticalRailEnabled="True">
+                        <Grid Padding="2" Height="48" AutomationProperties.Name="{Binding TimeStamp}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding TimeStamp}" Width="100" />
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="{Binding TotalVolume}" Width="100"/>
+                            <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="{Binding EstimatedRatePerHr}" Width="100"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" Height="80" Margin="10,38,0,0" VerticalAlignment="Top" Width="184" BorderThickness="2,2,2,2" Padding="3,3,3,3" CornerRadius="5,5,5,5" Background="#FFC9E7FF">
+            <Grid.BorderBrush>
+                <SolidColorBrush Color="{ThemeResource SystemAccentColorLight2}"/>
+            </Grid.BorderBrush>
+            <TextBlock x:Name="WeightInputErrorTxt" HorizontalAlignment="Left" Opacity="0" Margin="0,56,0,0" Text="Input must be numerical value" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Foreground="Red" FontStyle="Italic" FontSize="12" FontFamily="Segoe UI"/>
+            <TextBox x:Name="PatientWeightTxt" HorizontalAlignment="Left" Text="" VerticalAlignment="Top" Width="110" TextChanged="PatientWeight_TextChanged" FontFamily="Segoe UI" GotFocus="PatientWeightTxt_GotFocus" Margin="0,21,0,0" CharacterReceived="PatientWeightTxt_CharacterReceived"/>
+            <TextBlock x:Name="TitleWeight" HorizontalAlignment="Left" Text="Enter Patient Weight (Kg):" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Segoe UI" Margin="5,0,0,0"/>
+            <Button x:Name="EnterWeightBtn" Content="Enter" HorizontalAlignment="Left" Margin="119,21,0,0" VerticalAlignment="Top" Click="EnterWeightBtn_Click" Background="#FF000E82" Foreground="White" FontWeight="Bold"/>
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" Height="80" VerticalAlignment="Top" Width="314" Margin="199,38,0,0" Background="#FFC9E7FF" BorderThickness="2,2,2,2" Padding="3,3,3,3" CornerRadius="5,5,5,5">
+            <Grid.BorderBrush>
+                <SolidColorBrush Color="{ThemeResource SystemAccentColorLight2}"/>
+            </Grid.BorderBrush>
+            <TextBox x:Name="PatientPercentBurnTxt" HorizontalAlignment="Left" Margin="1,0,0,0" Text="" VerticalAlignment="Center" Width="122" TextChanged="PatientPercentBurnTxt_TextChanged" FontFamily="Segoe UI" GotFocus="PatientPercentBurnTxt_GotFocus" CharacterReceived="PatientPercentBurnTxt_CharacterReceived"/>
+            <TextBlock x:Name="TitleBurned" HorizontalAlignment="Left" Text="Enter Patient Estimated Percent Burned:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <Button x:Name="EnterBurnBtn" Content="Enter&#xA;" HorizontalAlignment="Left" Margin="133,0,0,0" VerticalAlignment="Center" Height="32" Click="EnterBurnBtn_Click" FontWeight="Bold" Foreground="White" Background="#FF000E82"/>
+            <TextBlock x:Name="PatientBurnInputErrorTxt" HorizontalAlignment="Left" Opacity="0" Margin="6,54,0,0" Text="Input must be numerical value" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="Red" FontStyle="Italic" FontWeight="Bold" FontSize="12"/>
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="136" Margin="9,123,0,0" Height="80" Background="#FFE4D7FF" Padding="3,0,3,0" BorderThickness="2,2,2,2" BorderBrush="#FFA89AC5" CornerRadius="5,5,5,5" >
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Top" Margin="68,0,0,0">
+                <TextBox x:Name="PatientNameBox" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="66" Padding="5,1,5,1" Height="25" IsReadOnly="True" BorderThickness="1,1,1,9" Background="#66B7B7B7" TextChanged="PatientNameBox_TextChanged" FontSize="12" Margin="0,0,0,0"/>
+                <TextBox x:Name="PatientWeightEnteredBox" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="66" Padding="5,0,5,0" Height="25" IsReadOnly="True" BorderThickness="1,1,1,9" Background="#66B7B7B7" TextChanged="PatientWeightEnteredBox_TextChanged" FontSize="12" FontWeight="Bold" Margin="0,0,0,0"/>
+                <TextBox x:Name="PatientBurnEnteredBox" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="66" Padding="5,0,5,0" Height="25" IsReadOnly="True" BorderThickness="1,1,1,9" Background="#66B7B7B7" TextChanged="PatientBurnEnteredBox_TextChanged" FontSize="12" FontWeight="Bold" Margin="0,0,0,0"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Top" Width="63" Padding="0,0,0,0">
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="17,0,0,0" Text="Patient:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="15,6,0,0" Text="Weight:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlock2" HorizontalAlignment="Center" Text="% Burned:" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,6,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Margin="150,123,288,279" Background="#FFE4D7FF" BorderBrush="#FFA89AC5" Padding="3,0,3,0" BorderThickness="2,2,2,2" CornerRadius="5,5,5,5" >
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Center" Width="218" Margin="20,0,0,0">
+                <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="10,0,0,0" Text="Estimated total fluid replacement:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Margin="10,5,0,0" Text="Fluid replacement rate, first 8-hrs:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlock5" HorizontalAlignment="Center" Text="Fluid replacement rate, next 16-hrs:" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,5,0,0"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Center" Margin="248,0,0,0">
+                <TextBox x:Name="PatientParklandResultBox" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="49" Padding="5,1,5,1" Height="25" IsReadOnly="True" BorderThickness="1,1,1,9" Background="#66B7B7B7" TextChanged="PatientParklandResultBox_TextChanged" FontSize="12" Margin="0,0,0,0"/>
+                <TextBox x:Name="RecommendedRateEightHrs" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="49" Padding="5,1,5,1" Height="25" IsReadOnly="True" BorderThickness="1,1,1,9" Background="#66B7B7B7" TextChanged="RecommendedRateEightHrs_TextChanged" FontSize="12" Margin="0,0,0,0"/>
+                <TextBox x:Name="RecommendedRateFinalHrs" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="49" Padding="5,0,5,0" Height="25" IsReadOnly="True" BorderThickness="1,1,1,9" Background="#66B7B7B7" TextChanged="RecommendedRateFinalHrs_TextChanged" FontSize="12" Margin="0,0,0,0"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" VerticalAlignment="Center" Width="39" Margin="303,0,0,0">
+                <TextBlock x:Name="textBlock6" HorizontalAlignment="Left" Text="mL" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlock7" HorizontalAlignment="Center" Text="mL/Hr" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,6,0,0"/>
+                <TextBlock x:Name="textBlock8" HorizontalAlignment="Center" Text="mL/Hr" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,6,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <Button x:Name="ComputeTreatmentBtn" Content="Compute and Begin Recommended Treatment" HorizontalAlignment="Left" Margin="161,208,0,0" VerticalAlignment="Top" Width="341" Height="22" Padding="8,0,8,0" Click="ComputeTreatmentBtn_Click" Background="#FF000E82" Foreground="White" FontWeight="Bold"/>
+
+        <TextBlock x:Name="TimeElapsedLabel" HorizontalAlignment="Left" Margin="222,237,0,0" Text="Time Elapsed:" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock x:Name="TimeElapsed" HorizontalAlignment="Left" Margin="318,236,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+        <TextBlock x:Name="TreatmentInitalTimeLabel" HorizontalAlignment="Left" Margin="10,237,0,0" Text="Started on:" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold"/>
+        <TextBlock x:Name="TreatmentInitalTime" HorizontalAlignment="Left" Margin="88,236,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top"/>
+    </Grid>
+</Page>
